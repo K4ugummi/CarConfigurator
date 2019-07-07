@@ -1,0 +1,441 @@
+﻿@model CarConfigurator.ViewModels.CarConfigViewModel
+@using Newtonsoft.Json
+
+@{
+    ViewBag.Title = "Build";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h2>@Model.Car.Name</h2>
+<h3>@Model.Car.Description</h3>
+<p>Base price: @Model.Car.Price</p>
+
+<div class="container">
+    <div class="row">
+        <section>
+            <div class="wizard">
+                <div class="wizard-inner">
+                    <div class="connecting-line"></div>
+                    <ul class="nav nav-tabs" role="tablist">
+
+                        <li role="presentation" class="active">
+                            <a href="#step1" data-toggle="tab" aria-controls="step1" role="tab" title="Engines">
+                                <span class="round-tab">
+                                    <i class="fas fa-cogs"></i>
+                                </span>
+                            </a>
+                        </li>
+
+                        <li role="presentation" class="disabled">
+                            <a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" title="Paints">
+                                <span class="round-tab">
+                                    <i class="fas fa-spray-can"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li role="presentation" class="disabled">
+                            <a href="#step3" data-toggle="tab" aria-controls="step3" role="tab" title="Rims">
+                                <span class="round-tab">
+                                    <i class="fas fa-life-ring"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li role="presentation" class="disabled">
+                            <a href="#step4" data-toggle="tab" aria-controls="step4" role="tab" title="Extras">
+                                <span class="round-tab">
+                                    <i class="fas fa-plus-square"></i>
+                                </span>
+                            </a>
+                        </li>
+
+                        <li role="presentation" class="disabled">
+                            <a href="#complete" data-toggle="tab" aria-controls="complete" role="tab" title="Complete">
+                                <span class="round-tab">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <form role="form">
+                    <div class="tab-content">
+                        <div class="tab-pane active" role="tabpanel" id="step1">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Engines</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th style="display:none;">Id</th>
+                                                <th>Name</th>
+                                                <th>Power (kW)</th>
+                                                <th>Description</th>
+                                                <th style="width:100px;">Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: data.Engines" style="cursor: pointer">
+                                            <tr data-bind="click: function() {$root.selectedEngineId(Id());$root.calculateConfigurationPrice()},
+                                                   style: { background: Id() == $root.selectedEngineId() ? '#efefef' : ''}">
+                                                <td style="display:none;" data-bind="text: Id"></td>
+                                                <td data-bind="text: Name"></td>
+                                                <td data-bind="text: KiloWatts"></td>
+                                                <td data-bind="text: Description"></td>
+                                                <td data-bind="text: Price"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <ul class="list-inline pull-left">
+                                        <li>Sum:</li>
+                                        <li><b data-bind="text: configurationPrice()"></b></li>
+                                    </ul>
+                                    <ul class="list-inline pull-right">
+                                        <li><button type="button" class="btn btn-primary next-step">Continue</button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" role="tabpanel" id="step2">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Paint</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th style="display:none;">Id</th>
+                                                <th>Name</th>
+                                                <th>Description</th>
+                                                <th style="width:100px;">Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: data.Paints" style="cursor: pointer">
+                                            <tr data-bind="click: function() {$root.selectedPaintId(Id());$root.calculateConfigurationPrice()},
+                                                   style: { background: Id() == $root.selectedPaintId() ? '#efefef' : ''}">
+                                                <td style="display:none;" data-bind="text: Id"></td>
+                                                <td data-bind="text: Name"></td>
+                                                <td data-bind="text: Description"></td>
+                                                <td data-bind="text: Price"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <ul class="list-inline pull-left">
+                                        <li>Sum:</li>
+                                        <li><b data-bind="text: configurationPrice()"></b></li>
+                                    </ul>
+                                    <ul class="list-inline pull-right">
+                                        <li><button type="button" class="btn btn-default prev-step">Previous</button></li>
+                                        <li><button type="button" class="btn btn-primary next-step">Continue</button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" role="tabpanel" id="step3">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Rims</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th style="display:none;">Id</th>
+                                                <th>Name</th>
+                                                <th>Diameter</th>
+                                                <th>Description</th>
+                                                <th style="width:100px;">Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: data.Rims" style="cursor: pointer">
+                                            <tr data-bind="click: function() {$root.selectedRimId(Id());$root.calculateConfigurationPrice()},
+                                                   style: { background: Id() == $root.selectedRimId() ? '#efefef' : ''}">
+                                                <td style="display:none;" data-bind="text: Id"></td>
+                                                <td data-bind="text: Name"></td>
+                                                <td data-bind="text: Diameter"></td>
+                                                <td data-bind="text: Description"></td>
+                                                <td data-bind="text: Price"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <ul class="list-inline pull-left">
+                                        <li>Sum:</li>
+                                        <li><b data-bind="text: configurationPrice()"></b></li>
+                                    </ul>
+                                    <ul class="list-inline pull-right">
+                                        <li><button type="button" class="btn btn-default prev-step">Previous</button></li>
+                                        <li><button type="button" class="btn btn-primary next-step">Continue</button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" role="tabpanel" id="step4">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Extras</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th style="display:none;">Id</th>
+                                                <th>Name</th>
+                                                <th>Description</th>
+                                                <th style="width:100px;">Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: data.Extras" style="cursor: pointer">
+                                            <tr data-bind="click: function() {$root.extraClicked(Id());$root.calculateConfigurationPrice()},
+                                                   style: { background: $root.checkIsSelectedExtra(Id()) ? '#efefef' : ''}">
+                                                <td style="display:none;" data-bind="text: Id"></td>
+                                                <td data-bind="text: Name"></td>
+                                                <td data-bind="text: Description"></td>
+                                                <td data-bind="text: Price"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <ul class="list-inline pull-left">
+                                        <li>Sum:</li>
+                                        <li><b data-bind="text: configurationPrice()"></b></li>
+                                    </ul>
+                                    <ul class="list-inline pull-right">
+                                        <li><button type="button" class="btn btn-default prev-step">Previous</button></li>
+                                        <li><button type="button" class="btn btn-primary next-step">Continue</button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" role="tabpanel" id="complete">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Your configuration</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Engine</th>
+                                                <th>Power (kW)</th>
+                                                <th>Description</th>
+                                                <th style="width:100px;">Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td data-bind="text: data.Engines()[selectedEngineId() - 1].Name"></td>
+                                                <td data-bind="text: data.Engines()[selectedEngineId() - 1].KiloWatts"></td>
+                                                <td data-bind="text: data.Engines()[selectedEngineId() - 1].Description"></td>
+                                                <td data-bind="text: data.Engines()[selectedEngineId() - 1].Price"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Paint</th>
+                                                <th>Description</th>
+                                                <th style="width:100px;">Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td data-bind="text: data.Paints()[selectedPaintId() - 1].Name"></td>
+                                                <td data-bind="text: data.Paints()[selectedPaintId() - 1].Description"></td>
+                                                <td data-bind="text: data.Paints()[selectedPaintId() - 1].Price"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Rims</th>
+                                                <th>Diameter</th>
+                                                <th>Description</th>
+                                                <th style="width:100px;">Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td data-bind="text: data.Rims()[selectedRimId() - 1].Name"></td>
+                                                <td data-bind="text: data.Rims()[selectedRimId() - 1].Diameter"></td>
+                                                <td data-bind="text: data.Rims()[selectedRimId() - 1].Description"></td>
+                                                <td data-bind="text: data.Rims()[selectedRimId() - 1].Price"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Extras</th>
+                                                <th>Description</th>
+                                                <th style="width:100px;">Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody data-bind="foreach: selectedExtraIds()">
+                                            <tr>
+                                                <td data-bind="text: data.Extras()[$data - 1].Name"></td>
+                                                <td data-bind="text: data.Extras()[$data - 1].Description"></td>
+                                                <td data-bind="text: data.Extras()[$data - 1].Price"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <ul class="list-inline pull-left">
+                                        <li>Sum:</li>
+                                        <li><b data-bind="text: configurationPrice()"></b></li>
+                                    </ul>
+                                    <ul class="list-inline pull-right">
+                                        <li><button type="button" class="btn btn-default prev-step">Previous</button></li>
+                                        <li><button type="button" class="btn btn-primary" data-bind="click: storeConfiguration">Store configuration</button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script>
+    var dataRaw = @Html.Raw(new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(Model));
+    var data = ko.mapping.fromJS(dataRaw);
+    var viewModel = {
+        selectedEngineId: ko.observable(1),
+        selectedPaintId: ko.observable(1),
+        selectedRimId: ko.observable(1),
+        selectedExtraIds: ko.observableArray(),
+
+        configurationPrice: ko.observable(0),
+
+        dataRaw: dataRaw,
+        data: data,
+
+
+        checkIsSelectedExtra: function (id) {
+            return this.selectedExtraIds.indexOf(id) != -1;
+        },
+
+        extraClicked: function (id) {
+            if (this.checkIsSelectedExtra(id)) {
+                this.selectedExtraIds.splice(
+                    this.selectedExtraIds.indexOf(id),
+                    1
+                );
+            }
+            else {
+                if (this.selectedExtraIds().length >= 5) {
+                    alert("MAX 5 EXTRAS");
+                }
+                else {
+                    this.selectedExtraIds.push(id);
+                }
+            }
+            this.calculateConfigurationPrice();
+        },
+
+        /*
+         * Calculate the current Price for all selected components of the car.
+         */
+        calculateConfigurationPrice: function () {
+            var extrasPrice = 0;
+
+            ko.utils.arrayForEach(this.selectedExtraIds(), function (extraId) {
+                extrasPrice += this.dataRaw.Extras[extraId - 1].Price;
+            });
+
+            this.configurationPrice(
+                this.dataRaw.Car.Price
+                + this.dataRaw.Engines[this.selectedEngineId() - 1].Price
+                + this.dataRaw.Paints[this.selectedPaintId() - 1].Price
+                + this.dataRaw.Rims[this.selectedRimId() - 1].Price
+                + extrasPrice
+            );
+        },
+
+        /*
+         * Helper function to return an ExtraId if it exists.
+         * If there is no extra added at the given id, this function returns 0.
+         */
+        getExtra: function (arrayIndex) {
+            var extraId = 0;
+            if (this.selectedExtraIds()[arrayIndex]) {
+                extraId = this.selectedExtraIds()[arrayIndex];
+            }
+            return extraId;
+        },
+
+        storeConfiguration: function () {
+            var configurationModel = {
+                Id: 0,
+                Guid: '00000000-0000-0000-0000-000000000000',
+                CarID: this.dataRaw.Car.Id,
+                EngineID: this.selectedEngineId(),
+                PaintID: this.selectedPaintId(),
+                RimID: this.selectedRimId(),
+                Extra1: this.getExtra(0),
+                Extra2: this.getExtra(1),
+                Extra3: this.getExtra(2),
+                Extra4: this.getExtra(3),
+                Extra5: this.getExtra(4),
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/CarConfigurator/Create",
+                data: ko.toJSON(configurationModel),
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    window.location.href = result.redirecturl;
+                },
+                error: function (err) {
+                    alert(err.status + " - " + err.statusText);
+                },
+            });
+        },
+    };
+
+    viewModel.calculateConfigurationPrice();
+    ko.applyBindings(viewModel);
+
+    $(document).ready(function () {
+        //Initialize tooltips
+        $('.nav-tabs > li a[title]').tooltip();
+
+        //Wizard
+        $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+
+            var $target = $(e.target);
+
+            if ($target.parent().hasClass('disabled')) {
+                return false;
+            }
+        });
+
+        $(".next-step").click(function (e) {
+
+            var $active = $('.wizard .nav-tabs li.active');
+            $active.next().removeClass('disabled');
+            nextTab($active);
+
+        });
+        $(".prev-step").click(function (e) {
+
+            var $active = $('.wizard .nav-tabs li.active');
+            prevTab($active);
+
+        });
+    });
+
+    function nextTab(elem) {
+        $(elem).next().find('a[data-toggle="tab"]').click();
+    }
+    function prevTab(elem) {
+        $(elem).prev().find('a[data-toggle="tab"]').click();
+    }
+</script>
+

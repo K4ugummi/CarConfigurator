@@ -1,0 +1,9 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron" style="height:500px;color: #fff;background-image:url('/Content/Images/main.jpg');background-size:cover;">
+    <h1 style="background:rgba(0, 0, 0, 0.2);">CarConfigurator</h1>
+    <p class="lead" style="background:rgba(0, 0, 0, 0.2);">This car configurator is my very first ASP.NET MVC project.</p>
+    @Html.ActionLink("Configure a car now", "Index", "CarConfigurator", null, new { @class = "btn btn-primary" })
+</div>

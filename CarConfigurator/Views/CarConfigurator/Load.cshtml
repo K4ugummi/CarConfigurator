@@ -1,0 +1,106 @@
+﻿@model CarConfigurator.ViewModels.LoadConfigurationViewModel
+@{
+    ViewBag.Title = "Load";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*
+    The load page should display details of a car that has been configured in the past.
+    In Addition this is the landing page a user gets to when he places his order or stores
+    the configuration. Thats why there should be a visible link to this page (displaying 
+    the guid) at the top.
+*@
+
+@{
+    var linkString = Model.Guid != default(Guid) ? "/CarConfigurator/Load/" + Model.Guid : null;
+    var configurationPrice = Model.Car.Price + Model.Engine.Price + Model.Paint.Price + Model.Rims.Price;
+    foreach (var extra in Model.Extras)
+    {
+        configurationPrice += extra.Price;
+    }
+}
+
+<h2>Your configuration</h2>
+<p>Your configuration Guid is: @Model.Guid</p>
+<p>You can return to your configuration with this link: <a href="@linkString">@linkString</a></p>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <div class="panel-title">
+            @Model.Car.Name - @configurationPrice €
+        </div>
+    </div>
+    <div class="panel-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Engine</th>
+                    <th>KiloWatts</th>
+                    <th>Description</th>
+                    <th style="width:100px;">Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Model.Engine.Name</td>
+                    <td>@Model.Engine.KiloWatts</td>
+                    <td>@Model.Engine.Description</td>
+                    <td>@Model.Engine.Price</td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Paint</th>
+                    <th>Description</th>
+                    <th style="width:100px;">Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Model.Paint.Name</td>
+                    <td>@Model.Paint.Description</td>
+                    <td>@Model.Paint.Price</td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Rims</th>
+                    <th>Diameter</th>
+                    <th>Description</th>
+                    <th style="width:100px;">Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Model.Rims.Name</td>
+                    <td>@Model.Rims.Diameter</td>
+                    <td>@Model.Rims.Description</td>
+                    <td>@Model.Rims.Price</td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Extra</th>
+                    <th>Description</th>
+                    <th style="width:100px;">Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var extra in Model.Extras)
+                {
+                <tr>
+                    <td>@extra.Name</td>
+                    <td>@extra.Description</td>
+                    <td>@extra.Price</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
