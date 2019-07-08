@@ -315,11 +315,17 @@
         dataRaw: dataRaw,
         data: data,
 
-
+        /*
+         * Helper function to check if an extra is selected.
+         */
         checkIsSelectedExtra: function (id) {
             return this.selectedExtraIds.indexOf(id) != -1;
         },
 
+        /*
+         * Function that is executed when an extra is (de-)selected.
+         * It manages having a maximum number of five extras selected.
+         */ 
         extraClicked: function (id) {
             if (this.checkIsSelectedExtra(id)) {
                 this.selectedExtraIds.splice(
@@ -337,6 +343,55 @@
             }
             this.calculateConfigurationPrice();
         },
+        
+        /*
+         * Helper function to search for a the array index via an engine id.
+         */
+        getEngineArrayIndex: function (engineId) {
+            for (var i = 0; i < this.data.Engines().length; i++) {
+                if (this.data.Engines()[i].Id() == engineId) {
+                    return i;
+                }
+            }
+            return -1;
+        },
+        
+        /*
+         * Helper function to search for a the array index via a paint id.
+         */
+        getPaintArrayIndex: function (paintId) {
+            for (var i = 0; i < this.data.Paints().length; i++) {
+                if (this.data.Paints()[i].Id() == paintId) {
+                    return i;
+                }
+            }
+            return -1;
+        },
+
+        /*
+         * Helper function to search for a the array index via a rim id.
+         */
+        getRimArrayIndex: function (rimId) {
+            for (var i = 0; i < this.data.Rims().length; i++) {
+                if (this.data.Rims()[i].Id() == rimId) {
+                    return i;
+                }
+            }
+            return -1;
+        },
+
+        /*
+         * Helper function to search for a the array index via a rim id.
+         */
+        getExtraArrayIndex: function (extraId) {
+            window.console.log(extraId);
+            for (var i = 0; i < this.data.Extras().length; i++) {
+                if (this.data.Extras()[i].Id() == extraId) {
+                    return i;
+                }
+            }
+            return -1;
+        },
 
         /*
          * Calculate the current Price for all selected components of the car.
@@ -345,14 +400,14 @@
             var extrasPrice = 0;
 
             ko.utils.arrayForEach(this.selectedExtraIds(), function (extraId) {
-                extrasPrice += this.dataRaw.Extras[extraId - 1].Price;
+                extrasPrice += this.dataRaw.Extras[this.getExtraArrayIndex(extraId)].Price;
             });
 
             this.configurationPrice(
                 this.dataRaw.Car.Price
-                + this.dataRaw.Engines[this.selectedEngineId() - 1].Price
-                + this.dataRaw.Paints[this.selectedPaintId() - 1].Price
-                + this.dataRaw.Rims[this.selectedRimId() - 1].Price
+                + this.dataRaw.Engines[this.getEngineArrayIndex(this.selectedEngineId())].Price
+                + this.dataRaw.Paints[this.getPaintArrayIndex(this.selectedPaintId())].Price
+                + this.dataRaw.Rims[this.getRimArrayIndex(this.selectedRimId())].Price
                 + extrasPrice
             );
         },
@@ -368,7 +423,10 @@
             }
             return extraId;
         },
-
+        /*
+         * Stores the current configuration. Sends a ajax post request to the server
+         * and if it succesful, the user will be redirected to the load page.
+         */
         storeConfiguration: function () {
             var configurationModel = {
                 Id: 0,
